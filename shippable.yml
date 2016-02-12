@@ -1,0 +1,39 @@
+language: python
+
+python:
+  - 2.6
+
+env:
+  global:
+    - FOO=FUBU
+    - FO1=BUBU
+    - BOO=GUBU
+
+  matrix:
+    - M1=ONE
+
+# Mongo binds to 127.0.0.1 by default
+services:
+  - couchdb
+  - elasticsearch
+  - memcached
+  - redis
+  - rabbitmq
+
+build:
+
+  ci:
+  - pip install -r requirements.txt
+  - mkdir -p shippable/testresults
+  - mkdir -p shippable/codecoverage
+  - nosetests test.py --with-xunit --xunit-file=shippable/testresults/nosetests.xml
+  - which python && coverage run --branch test.py
+  - which python && coverage xml -o shippable/codecoverage/coverage.xml test.py
+  - python elastic.py
+  - python memcache_service.py
+  - python redis_service.py
+
+  post_ci:
+    - echo "true"
+
+
