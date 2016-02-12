@@ -19,19 +19,21 @@ services:
   - memcached
   - redis
   - rabbitmq
+  - postgres
 
 build:
 
   ci:
-  - pip install -r requirements.txt
-  - mkdir -p shippable/testresults
-  - mkdir -p shippable/codecoverage
-  - nosetests test.py --with-xunit --xunit-file=shippable/testresults/nosetests.xml
-  - which python && coverage run --branch test.py
-  - which python && coverage xml -o shippable/codecoverage/coverage.xml test.py
-  - python elastic.py
-  - python memcache_service.py
-  - python redis_service.py
+    - pip install -r requirements.txt
+    - psql -c 'create database test;' -U postgres
+    - mkdir -p shippable/testresults
+    - mkdir -p shippable/codecoverage
+    - nosetests test.py --with-xunit --xunit-file=shippable/testresults/nosetests.xml
+    - which python && coverage run --branch test.py
+    - which python && coverage xml -o shippable/codecoverage/coverage.xml test.py
+    - python elastic.py
+    - python memcache_service.py
+    - python redis_service.py
 
   post_ci:
     - echo "true"
