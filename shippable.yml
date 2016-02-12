@@ -20,12 +20,14 @@ services:
   - redis
   - rabbitmq
   - postgres
+  - rethinkdb
 
 build:
 
   ci:
     - pip install -r requirements.txt
     - psql -c 'create database test;' -U postgres
+    - python initialize.py
     - mkdir -p shippable/testresults
     - mkdir -p shippable/codecoverage
     - nosetests test.py --with-xunit --xunit-file=shippable/testresults/nosetests.xml
