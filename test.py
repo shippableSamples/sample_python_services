@@ -1,6 +1,7 @@
 import unittest
 from couch import Couch
 from rabbit import Rabbit
+from postgres_service import Postgres
 
 class TestSuite(unittest.TestCase):
 
@@ -9,12 +10,19 @@ class TestSuite(unittest.TestCase):
         couch.populate()
         things = couch.count()
         self.failIf(things != 5)
-        
+
     def test_rabbit(self):
         rabbit = Rabbit()
         rabbit.sendMessage()
         things = rabbit.relayMessage()
         self.failIf(things != "Hello World!")
+
+    def test_postgres(self):
+        pg = Postgres()
+        pg.populate()
+        count = pg.read()
+        self.failIf(count != 5)
+        pg.disconnect()
 
 
 def main():
