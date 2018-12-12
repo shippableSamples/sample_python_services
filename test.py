@@ -2,7 +2,6 @@ import unittest
 from couch import Couch
 from rabbit import Rabbit
 from postgres_service import Postgres
-from rethink import Rethink
 
 class TestSuite(unittest.TestCase):
 
@@ -24,12 +23,6 @@ class TestSuite(unittest.TestCase):
         count = pg.read()
         self.failIf(count != 5)
         pg.disconnect()
-
-    def test_rethink(self):
-        rethink = Rethink()
-        rethink.populate()
-        things = rethink.count()
-        self.failIf(things != 5)
 
 def main():
     unittest.main()
